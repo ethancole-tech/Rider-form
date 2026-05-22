@@ -28,6 +28,38 @@ textarea{height:70px;resize:vertical}
 .opt:hover{border-color:#FF4500;color:#fff}
 .opt input{accent-color:#FF4500;width:15px;height:15px;flex-shrink:0}
 .note{font-size:12px;color:#555;margin-top:5px}
+
+/* ── COMMITMENT BOX ── */
+.commitment-box{
+  background:#1A0A00;
+  border:1.5px solid #FF4500;
+  border-radius:12px;
+  padding:18px 16px;
+  margin-bottom:16px;
+}
+.commitment-box .cb-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;color:#FF6633;
+  margin-bottom:10px;
+}
+.commitment-box .cb-title span{font-size:18px}
+.commitment-box ul{
+  list-style:none;display:flex;flex-direction:column;gap:7px;
+  margin-bottom:12px;
+}
+.commitment-box ul li{
+  font-size:13px;color:#CC9977;line-height:1.55;
+  padding-left:16px;position:relative;
+}
+.commitment-box ul li::before{content:'›';position:absolute;left:0;color:#FF4500;font-weight:700}
+.commitment-box .cb-urdu{
+  font-size:13px;color:#AA7755;
+  text-align:right;direction:rtl;
+  border-top:1px solid #2A1A0A;
+  padding-top:10px;margin-top:4px;
+  line-height:1.7;
+}
+
 .btn{width:100%;padding:15px;background:#FF4500;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;transition:opacity .15s;font-family:inherit}
 .btn:hover{opacity:.88}
 .btn:active{opacity:.72}
@@ -47,6 +79,8 @@ textarea{height:70px;resize:vertical}
   </div>
 
   <div id="formArea">
+
+    <!-- PERSONAL INFO -->
     <div class="section">
       <div class="sec-label">Personal Info</div>
       <div class="two">
@@ -59,6 +93,7 @@ textarea{height:70px;resize:vertical}
       </div>
     </div>
 
+    <!-- BIKE & DOCUMENTS -->
     <div class="section">
       <div class="sec-label">Bike & Documents</div>
       <div class="field"><label>Do you own a bike? <span class="req">*</span></label>
@@ -84,6 +119,7 @@ textarea{height:70px;resize:vertical}
       </div>
     </div>
 
+    <!-- AVAILABILITY -->
     <div class="section">
       <div class="sec-label">Availability</div>
       <div class="field"><label>Daily hours available <span class="req">*</span></label>
@@ -105,6 +141,7 @@ textarea{height:70px;resize:vertical}
       </div>
     </div>
 
+    <!-- EXPERIENCE -->
     <div class="section">
       <div class="sec-label">Experience</div>
       <div class="field"><label>Delivery experience before? <span class="req">*</span></label>
@@ -130,14 +167,39 @@ textarea{height:70px;resize:vertical}
       </div>
     </div>
 
+    <!-- AGREEMENT -->
     <div class="section">
       <div class="sec-label">Agreement</div>
+
+      <!-- COMMITMENT BOX -->
+      <div class="commitment-box">
+        <div class="cb-title"><span>⚠️</span> Minimum 1-Month Commitment Required</div>
+        <ul>
+          <li>Once you join PlateRun, you must work for a minimum of <strong style="color:#FF6633">1 full month</strong> before leaving.</li>
+          <li>If you leave before completing 1 month without a valid reason, your last week's payment may be withheld.</li>
+          <li>Sudden no-shows or disappearing without notice will result in immediate removal and no payment.</li>
+          <li>This rule exists to protect our restaurants and customers. We respect your time — respect ours too.</li>
+        </ul>
+        <div class="cb-urdu">
+          ایک بار جوائن کرنے کے بعد کم از کم 1 مہینہ کام کرنا لازمی ہے۔<br/>
+          بغیر اطلاع کے چھوڑنے پر آخری ہفتے کی payment روکی جا سکتی ہے۔
+        </div>
+      </div>
+
+      <div class="field"><label>I understand and agree to the 1-month minimum commitment <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="opt"><input type="radio" name="commitment" value="Yes, I commit to minimum 1 month"/> ✅ Yes, I commit to minimum 1 month</label>
+          <label class="opt"><input type="radio" name="commitment" value="No, I cannot commit"/> ❌ No, I cannot commit to this</label>
+        </div>
+      </div>
+
       <div class="field"><label>Payment is Rs. 100–120 per delivery, no fixed salary. You agree? <span class="req">*</span></label>
         <div class="radio-group">
           <label class="opt"><input type="radio" name="pay" value="Yes, I agree"/> Yes, I agree</label>
           <label class="opt"><input type="radio" name="pay" value="No"/> No</label>
         </div>
       </div>
+
       <div class="field"><label>Okay with phone location tracking during shifts? <span class="req">*</span></label>
         <div class="radio-group">
           <label class="opt"><input type="radio" name="track" value="Yes, I agree"/> Yes, I agree</label>
@@ -147,6 +209,8 @@ textarea{height:70px;resize:vertical}
     </div>
 
     <div class="err" id="errMsg">Please fill all required fields before submitting.</div>
+    <div class="err" id="errCommit" style="display:none">You must agree to the 1-month commitment to apply for this position.</div>
+
     <button class="btn" onclick="submitForm()">Submit Application</button>
     <p class="note" style="text-align:center;margin-top:12px">We will contact you on WhatsApp within 48 hours if selected.</p>
   </div>
@@ -176,15 +240,25 @@ function submitForm(){
   const start=radio('start');
   const exp=radio('exp');
   const area_know=radio('area_know');
+  const commitment=radio('commitment');
   const pay=radio('pay');
   const track=radio('track');
 
-  if(!name||!age||!phone||!area||!hours||!bike||!cnic||!license||!shift||!start||!exp||!area_know||!pay||!track){
+  g('errMsg').style.display='none';
+  g('errCommit').style.display='none';
+
+  if(!name||!age||!phone||!area||!hours||!bike||!cnic||!license||!shift||!start||!exp||!area_know||!commitment||!pay||!track){
     g('errMsg').style.display='block';
     g('errMsg').scrollIntoView({behavior:'smooth'});
     return;
   }
-  g('errMsg').style.display='none';
+
+  // Block applicants who don't agree to commitment
+  if(commitment !== 'Yes, I commit to minimum 1 month'){
+    g('errCommit').style.display='block';
+    g('errCommit').scrollIntoView({behavior:'smooth'});
+    return;
+  }
 
   const bikeModel=g('f_bike').value.trim()||'Not provided';
   const prev=checks('prev');
@@ -213,6 +287,7 @@ Previous Work: ${prev}
 Knows Johar Town: ${area_know}
 
 --- Agreement ---
+1-Month Commitment: ${commitment}
 Pay Agreement: ${pay}
 Tracking Agreement: ${track}
 ==========================================`;
